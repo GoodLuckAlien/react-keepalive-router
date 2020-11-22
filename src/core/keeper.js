@@ -35,7 +35,7 @@ const useKeeper = () => useReducer((state, action) => {
     case ACTION_ACTIVE:
       if (state[payload.cacheId]) {
         let other = {}
-        if (payload.load) other[load] = payload.load
+        if (payload.load) other.load = payload.load
         state[payload.cacheId] = {
           ...state[payload.cacheId],
           lastState: state[payload.cacheId].state,

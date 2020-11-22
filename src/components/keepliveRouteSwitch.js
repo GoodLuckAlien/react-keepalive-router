@@ -1,6 +1,6 @@
 
 import React, {useMemo} from 'react'
-import {Switch, matchPath} from 'react-router'
+import {Switch, matchPath,useHistory , __RouterContext, withRouter} from 'react-router-dom'
 import invariant from 'invariant'
 
 import Cache from './keepCache'
@@ -21,9 +21,14 @@ class KeepliveRouterSwitch extends Switch {
     const __render = this.render
     this.render = () => {
       if (ishasRouterSwitch) {
-        const {history} = this.context.router
-        const {location} = history
-        let element, match
+        let element, match , history , location
+        if(this.context.router){
+          history = this.context.router.history
+          location = history.location
+        }else{
+          history = this.props.history
+          location = this.props.location
+        }
         forEach(children, child => {
           if (match == null && isValidElement(child)) {
             element = child
@@ -36,7 +41,7 @@ class KeepliveRouterSwitch extends Switch {
         return match
           ? isKeepliveRouter(element)
             ? <CacheContext.Consumer>
-              { context => cloneElement(element, {location, computedMatch: match, cacheDispatch, iskeep: true, ...context}) }
+              {context => cloneElement(element, {location, computedMatch: match, cacheDispatch, iskeep: true, ...context})}
             </CacheContext.Consumer>
             : cloneElement(element, {location, computedMatch: match, cacheDispatch})
           : null
@@ -48,7 +53,7 @@ class KeepliveRouterSwitch extends Switch {
 
 KeepliveRouterSwitch.__componentType = KEEPLIVE_ROUTE_SWITCH
 
-export default ({children, ...props}) => {
+const KeepSwitch = ({children, ...props}) => {
   const ishasRouterSwitch = useMemo(() => {
     let ishas = false
     forEach(children, child => {
@@ -63,14 +68,14 @@ export default ({children, ...props}) => {
     return ishas
   }, [])
   if (ishasRouterSwitch) {
-    return <Cache>
+    return <Cache {...props} >
       {
         cacheProps => {
           return (
             <KeepliveRouterSwitch
-              {...props}
-              {...cacheProps}
-              ishasRouterSwitch
+                {...props}
+                {...cacheProps}
+                ishasRouterSwitch
             >
               {children}
             </KeepliveRouterSwitch>
@@ -84,3 +89,5 @@ export default ({children, ...props}) => {
   </KeepliveRouterSwitch>
 }
 
+
+export default ( useHistory || __RouterContext) ? withRouter(KeepSwitch) : KeepSwitch

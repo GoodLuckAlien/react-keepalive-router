@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route} from 'react-router'
+import {Route} from 'react-router-dom'
 import invariant from 'invariant'
 
 import {isFuntion} from '../utils/index'
@@ -22,14 +22,13 @@ class KeepliveRoute extends Route {
     this.componentCur = null
     const {children, component, render, iskeep, cacheDispatch, cacheState} = prop
     if (iskeep) {
-      
+
       /* 如果当前 KeepliveRoute 没有被 KeepliveRouterSwitch 包裹 ，那么 KeepliveRoute 就会失去缓存作用， 就会按照正常route处理 */
-      const {router = {}} = this.context
       const cacheId = this.getAndcheckCacheKey()
       /* 执行监听函数 */
       Promise.resolve().then(() => {
         keeperCallbackQuene.forEach(cb => {
-          isFuntion(cb) && cb(this.context.router, this.getAndcheckCacheKey())
+          isFuntion(cb) && cb({...this.props}, this.getAndcheckCacheKey())
         })
       })
       if (!cacheState[cacheId] || (cacheState[cacheId] && cacheState[cacheId].state === 'destory')) {
@@ -40,12 +39,12 @@ class KeepliveRoute extends Route {
             load: this.injectDom.bind(this),
             children: cb => children
               ? isFuntion(children)
-                ? children({...router})
+                ? children({...this.props})
                 : children
               : component
-                ? React.createElement(component, {...router, ref: cur => cb && cb(cur)})
+                ? React.createElement(component, {...this.props, ref: cur => cb && cb(cur)})
                 : render
-                  ? render({...router})
+                  ? render({...this.props})
                   : null
           }
         })
@@ -53,13 +52,13 @@ class KeepliveRoute extends Route {
       } else if (cacheState[cacheId]) {
         this.keepliveState = cacheState[cacheId].state
       }
-    
+
       this.render = () => {
         return <div ref={node => (this.parentNode = node)} />
       }
     }
   }
-  
+
   componentWillReceiveProps(curProps) {
     const {cacheState} = curProps
     this.keepliveState = cacheState[this.getAndcheckCacheKey()].state
@@ -112,7 +111,7 @@ class KeepliveRoute extends Route {
         payload: cacheId
       })
     } catch (e) {
-      
+
     }
   }
 

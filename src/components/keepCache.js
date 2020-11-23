@@ -14,6 +14,7 @@ export const handerReactComponent = (children, prop) =>
     : isFuntion(children)
       ? children(prop)
       : null
+const UpdateComponent = memo(({children}) => children, () => true)
 
 const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState, load = () => { }, router = {}}) => {
   const parentCurDom = useRef(null)
@@ -47,25 +48,25 @@ const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState, load
     }
   }, [state])
   return <div ref={curDom}
-      style={{display: state === ACTION_UNACTUVED ? 'none' : 'block'}}
-         >
-    {(state === ACTION_ACTIVE || state === ACTION_ACTIVED || state === ACITON_UNACTIVE || state === ACTION_UNACTUVED) ? children(ref => (curComponent.current = ref)) : null}
+    style={{display: state === ACTION_UNACTUVED ? 'none' : 'block'}}
+  >
+    {(state === ACTION_ACTIVE || state === ACTION_ACTIVED || state === ACITON_UNACTIVE || state === ACTION_UNACTUVED) ? <UpdateComponent>{children()}</UpdateComponent> : null}
   </div>
 }, keepChange)
 
-function Cache({children}) {
+function Cache({children, ...prop}) {
   const [cacheState, cacheDispatch] = useKeeper()
   return <CacheContext.Provider value={{cacheState, cacheDispatch}} >
     {
       Object.keys(cacheState).map(cacheId => <CacheKeepItem cacheId={cacheId}
-          key={cacheId}
-          {...cacheState[cacheId]}
-          dispatch={cacheDispatch}
-                                             />)
+        key={cacheId}
+        {...cacheState[cacheId]}
+        dispatch={cacheDispatch}
+      />)
     }
     {!cacheDispatchCurrent && <GetCacheContext cacheDispatch={c => (cacheDispatchCurrent = c)} />}
     {/* 提供对外的cacheDispatch方法 */}
-    {useMemo(() => children({cacheDispatch}), [])}
+    {useMemo(() => children({cacheDispatch}), [prop.location])}
   </CacheContext.Provider>
 }
 

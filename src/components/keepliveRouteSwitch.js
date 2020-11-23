@@ -1,6 +1,6 @@
 
 import React, {useMemo} from 'react'
-import {Switch, matchPath,useHistory , __RouterContext, withRouter} from 'react-router-dom'
+import {Switch, matchPath, useHistory, __RouterContext, withRouter} from 'react-router-dom'
 import invariant from 'invariant'
 
 import Cache from './keepCache'
@@ -21,11 +21,11 @@ class KeepliveRouterSwitch extends Switch {
     const __render = this.render
     this.render = () => {
       if (ishasRouterSwitch) {
-        let element, match , history , location
-        if(this.context.router){
+        let element, match, history, location
+        if (this.context.router) {
           history = this.context.router.history
           location = history.location
-        }else{
+        } else {
           history = this.props.history
           location = this.props.location
         }
@@ -41,9 +41,9 @@ class KeepliveRouterSwitch extends Switch {
         return match
           ? isKeepliveRouter(element)
             ? <CacheContext.Consumer>
-              {context => cloneElement(element, {location, computedMatch: match, cacheDispatch, iskeep: true, ...context})}
+              {context => cloneElement(element, {location, history, computedMatch: match, cacheDispatch, iskeep: true, ...context})}
             </CacheContext.Consumer>
-            : cloneElement(element, {location, computedMatch: match, cacheDispatch})
+            : cloneElement(element, {location, history, computedMatch: match, cacheDispatch})
           : null
       }
       return __render.call(this)
@@ -73,9 +73,9 @@ const KeepSwitch = ({children, ...props}) => {
         cacheProps => {
           return (
             <KeepliveRouterSwitch
-                {...props}
-                {...cacheProps}
-                ishasRouterSwitch
+              {...props}
+              {...cacheProps}
+              ishasRouterSwitch
             >
               {children}
             </KeepliveRouterSwitch>
@@ -89,5 +89,4 @@ const KeepSwitch = ({children, ...props}) => {
   </KeepliveRouterSwitch>
 }
 
-
-export default ( useHistory || __RouterContext) ? withRouter(KeepSwitch) : KeepSwitch
+export default (useHistory || __RouterContext) ? withRouter(KeepSwitch) : KeepSwitch

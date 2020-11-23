@@ -37,12 +37,12 @@ class KeepliveRoute extends Route {
           payload: {
             cacheId, // React.createElement(component || render || children, {...router})
             load: this.injectDom.bind(this),
-            children: cb => children
+            children: () => children
               ? isFuntion(children)
                 ? children({...this.props})
                 : children
               : component
-                ? React.createElement(component, {...this.props, ref: cur => cb && cb(cur)})
+                ? React.createElement(component, {...this.props})
                 : render
                   ? render({...this.props})
                   : null

@@ -68,7 +68,7 @@ const index = () => {
 
 **效果**
 
-<img src="./md/demo.gif"  />
+<img src="https://img-blog.csdnimg.cn/20201209002609524.gif#pic_center"  />
 
 
 ### 2 其他功能
@@ -119,4 +119,10 @@ cacheDispatch({ type:'reset' })
 
 ````js
 cacheDispatch({ type:'reset',payload:'cacheId' }) 
+````
+
+**2 清除多个缓存**
+
+````js
+cacheDispatch({ type:'reset',payload:['cacheId1'，'cacheId2'] }) 
 ````

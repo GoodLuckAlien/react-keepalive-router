@@ -68,8 +68,10 @@ const index = () => {
 
 **效果**
 
-<img src="https://img-blog.csdnimg.cn/20201209002609524.gif#pic_center"  />
 
+
+
+![demo演示](https://img-blog.csdnimg.cn/20201209002609524.gif#pic_center)
 
 ### 2 其他功能
 

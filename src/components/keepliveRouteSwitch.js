@@ -1,10 +1,10 @@
 
-import React, {useMemo} from 'react'
+import React, {useMemo, useEffect, useRef} from 'react'
 import {Switch, matchPath, useHistory, __RouterContext, withRouter} from 'react-router-dom'
 import invariant from 'invariant'
 
-import Cache from './keepCache'
-import {KEEPLIVE_ROUTE_SWITCH, KEEPLIVE_ROUTE_COMPONENT} from '../utils/const'
+import Cache , { beforeSwitchDestory } from './keepCache'
+import {KEEPLIVE_ROUTE_SWITCH, KEEPLIVE_ROUTE_COMPONENT , ACTION_RESERT ,ACTION_DESTORYED } from '../utils/const'
 import {isFuntion, isObject} from '../utils/index'
 import CacheContext from '../core/cacheContext'
 
@@ -38,12 +38,13 @@ class KeepliveRouterSwitch extends Switch {
               : this.context.match
           }
         })
+        console.log( match )
         return match
           ? isKeepliveRouter(element)
             ? <CacheContext.Consumer>
-              {context => cloneElement(element, {location, history, computedMatch: match, cacheDispatch, iskeep: true, ...context})}
+              {context => cloneElement(element, {location, history, computedMatch: match, cacheDispatch, match,iskeep: true, ...context})}
             </CacheContext.Consumer>
-            : cloneElement(element, {location, history, computedMatch: match, cacheDispatch})
+            : cloneElement(element, {location, history, computedMatch: match, match,cacheDispatch})
           : null
       }
       return __render.call(this)
@@ -67,6 +68,18 @@ const KeepSwitch = ({children, ...props}) => {
     })
     return ishas
   }, [])
+  useEffect(()=>{
+    /* 防止当 KeepSwitch 突然销毁造成 react 找不到即将销毁的真实dom节点引发的报错 */
+    return function (){
+       try{
+         for(let key in beforeSwitchDestory){
+          beforeSwitchDestory[key] && beforeSwitchDestory[key]()
+         }
+       }catch(e){
+
+       }
+    }
+  },[])
   if (ishasRouterSwitch) {
     return <Cache {...props} >
       {

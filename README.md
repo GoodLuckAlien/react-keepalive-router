@@ -125,7 +125,7 @@ cacheDispatch({ type:'reset' })
 cacheDispatch({ type:'reset',payload:'cacheId' }) 
 ````
 
-**2 清除多个缓存**
+**3 清除多个缓存**
 
 ````js
 cacheDispatch({ type:'reset',payload:['cacheId1'，'cacheId2'] }) 

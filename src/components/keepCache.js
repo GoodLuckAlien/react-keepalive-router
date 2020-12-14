@@ -5,6 +5,8 @@ import useKeeper from '../core/keeper'
 import {ACTION_ACTIVE, ACTION_ACTIVED, ACITON_UNACTIVE, ACTION_UNACTUVED, ACTION_DESTORYED} from '../utils/const'
 import {isFuntion} from '../utils/index'
 
+
+export const beforeSwitchDestory = {}
 const keepChange = (pre, next) => pre.state === next.state
 let cacheDispatchCurrent = null
 
@@ -20,6 +22,14 @@ const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState, load
   const parentCurDom = useRef(null)
   const curDom = useRef(null)
   const curComponent = useRef(null)
+  useEffect(()=>{
+    beforeSwitchDestory[cacheId] = function (){
+      if(parentCurDom.current && curDom.current ) parentCurDom.current.appendChild(curDom.current)
+    }
+    return function(){
+       delete beforeSwitchDestory[cacheId]
+    }
+  },[])
   useEffect(() => {
     if (state === ACTION_ACTIVE) { /* 激活状态 */
       const {current} = curDom

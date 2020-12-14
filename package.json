@@ -1,6 +1,6 @@
 {
   "name": "react-keepalive-router",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "homepage": "https://github.com/AlienZhaolin/react-keepalive-router",
   "peerDependencies": {
     "react": ">=16.8",
-    "react-router": ">=4",
+    "react-router-dom": ">=4",
     "invariant":">=2"
   },
   "author": "alien",

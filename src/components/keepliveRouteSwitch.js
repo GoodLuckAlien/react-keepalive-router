@@ -4,7 +4,7 @@ import {Switch, matchPath, useHistory, __RouterContext, withRouter} from 'react-
 import invariant from 'invariant'
 
 import Cache , { beforeSwitchDestory } from './keepCache'
-import {KEEPLIVE_ROUTE_SWITCH, KEEPLIVE_ROUTE_COMPONENT , ACTION_RESERT ,ACTION_DESTORYED } from '../utils/const'
+import {KEEPLIVE_ROUTE_SWITCH, KEEPLIVE_ROUTE_COMPONENT  } from '../utils/const'
 import {isFuntion, isObject} from '../utils/index'
 import CacheContext from '../core/cacheContext'
 
@@ -19,6 +19,7 @@ class KeepliveRouterSwitch extends Switch {
     super(props, ...arg)
     const {ishasRouterSwitch, children, cacheDispatch} = props
     const __render = this.render
+   
     this.render = () => {
       if (ishasRouterSwitch) {
         let element, match, history, location
@@ -38,7 +39,6 @@ class KeepliveRouterSwitch extends Switch {
               : this.context.match
           }
         })
-        console.log( match )
         return match
           ? isKeepliveRouter(element)
             ? <CacheContext.Consumer>
@@ -54,7 +54,7 @@ class KeepliveRouterSwitch extends Switch {
 
 KeepliveRouterSwitch.__componentType = KEEPLIVE_ROUTE_SWITCH
 
-const KeepSwitch = ({children, ...props}) => {
+const KeepSwitch = ({children, withoutRoute = false, deep = true,...props}) => {
   const ishasRouterSwitch = useMemo(() => {
     let ishas = false
     forEach(children, child => {
@@ -68,6 +68,7 @@ const KeepSwitch = ({children, ...props}) => {
     })
     return ishas
   }, [])
+  
   useEffect(()=>{
     /* 防止当 KeepSwitch 突然销毁造成 react 找不到即将销毁的真实dom节点引发的报错 */
     return function (){
@@ -75,24 +76,24 @@ const KeepSwitch = ({children, ...props}) => {
          for(let key in beforeSwitchDestory){
           beforeSwitchDestory[key] && beforeSwitchDestory[key]()
          }
-       }catch(e){
-
-       }
+       }catch(e){}
     }
   },[])
-  if (ishasRouterSwitch) {
+  if (ishasRouterSwitch || deep) {
     return <Cache {...props} >
       {
         cacheProps => {
-          return (
-            <KeepliveRouterSwitch
+          return withoutRoute
+          ? 
+          children
+          :
+          <KeepliveRouterSwitch
               {...props}
               {...cacheProps}
               ishasRouterSwitch
             >
               {children}
-            </KeepliveRouterSwitch>
-          )
+          </KeepliveRouterSwitch>
         }
       }
     </Cache>

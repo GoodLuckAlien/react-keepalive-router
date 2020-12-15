@@ -1,7 +1,8 @@
-import React from 'react'
+import React , { useContext } from 'react'
 import {Route} from 'react-router-dom'
 import invariant from 'invariant'
 
+import CacheContext from '../core/cacheContext' 
 import {isFuntion} from '../utils/index'
 import {keeperCallbackQuene} from '../core/keeper'
 import {
@@ -12,17 +13,15 @@ import {
   ACITON_UNACTIVE,
   ACTION_UNACTUVED
 } from '../utils/const'
-// import CacheContext from '../core/cacheContext'
 
-class KeepliveRoute extends Route {
+class CacheRoute extends Route {
   constructor(prop, ...arg) {
     super(prop, ...arg)
     this.parentNode = null
     this.keepliveState = ''
     this.componentCur = null
-    const {children, component, render, iskeep, cacheDispatch, cacheState} = prop
-    if (iskeep) {
-
+    const {children, component,iskeep, render, cacheDispatch, cacheState} = prop
+    if (iskeep && cacheDispatch && cacheState ) {
       /* 如果当前 KeepliveRoute 没有被 KeepliveRouterSwitch 包裹 ，那么 KeepliveRoute 就会失去缓存作用， 就会按照正常route处理 */
       const cacheId = this.getAndcheckCacheKey()
       /* 执行监听函数 */
@@ -60,7 +59,8 @@ class KeepliveRoute extends Route {
   }
 
   componentWillReceiveProps(curProps) {
-    const {cacheState} = curProps
+    const { cacheState } = curProps
+    if(!cacheState) return 
     this.keepliveState = cacheState[this.getAndcheckCacheKey()].state
   }
 
@@ -121,6 +121,13 @@ class KeepliveRoute extends Route {
     this.exportDom()
   }
 
+}
+
+const KeepliveRoute = (props)=>{
+    const { cacheState } = props
+    const value = useContext(CacheContext) || {}
+    if(cacheState) return <CacheRoute {...props} />
+    else return  <CacheRoute {...props} {...value} iskeep  />
 }
 
 KeepliveRoute.__componentType = KEEPLIVE_ROUTE_COMPONENT

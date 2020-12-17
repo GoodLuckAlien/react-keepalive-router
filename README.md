@@ -77,7 +77,7 @@ const index = () => {
   <div>
      <Route path="/a" component={ComponentA}  />
      <Route path="/b" component={ComponentB}  />
-
+     <KeepaliveRoute path={'/detail'} component={ Detail } ></KeepaliveRoute>
   </div>
 </KeepaliveRouterSwitch>
 

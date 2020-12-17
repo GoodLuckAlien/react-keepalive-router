@@ -19,7 +19,7 @@ class KeepliveRouterSwitch extends Switch {
     super(props, ...arg)
     const {ishasRouterSwitch, children, cacheDispatch} = props
     const __render = this.render
-   
+
     this.render = () => {
       if (ishasRouterSwitch) {
         let element, match, history, location
@@ -68,7 +68,7 @@ const KeepSwitch = ({children, withoutRoute = false, deep = true,...props}) => {
     })
     return ishas
   }, [])
-  
+
   useEffect(()=>{
     /* 防止当 KeepSwitch 突然销毁造成 react 找不到即将销毁的真实dom节点引发的报错 */
     return function (){
@@ -84,14 +84,14 @@ const KeepSwitch = ({children, withoutRoute = false, deep = true,...props}) => {
       {
         cacheProps => {
           return withoutRoute
-          ? 
+          ?
           children
           :
           <KeepliveRouterSwitch
               {...props}
               {...cacheProps}
               ishasRouterSwitch
-            >
+          >
               {children}
           </KeepliveRouterSwitch>
         }

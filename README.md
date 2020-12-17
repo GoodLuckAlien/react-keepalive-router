@@ -31,13 +31,17 @@ yarn add react-keepalive-router
 
 ### 1 基本用法
 
-#### KeepliveRouterSwitch ,KeepliveRoute
 
-`KeepliveRouterSwitch`,`KeepliveRoute` 基本使用和 `Switch` , `Route`没有任何区别
+#### KeepaliveRouterSwitch
+
+
+`KeepaliveRouterSwitch`可以理解为常规的Switch,也可以理解为 `keepaliveScope`,我们**确保整个缓存作用域，只有一个 `KeepaliveRouterSwitch` 就可以了**。
+
+#### 常规用法
 
 ````jsx
 import { BrowserRouter as Router, Route, Redirect ,useHistory  } from 'react-router-dom'
-import { KeepliveRouterSwitch ,KeepliveRoute ,addKeeperListener } from 'react-keepalive-router'
+import { KeepaliveRouterSwitch ,KeepaliveRoute ,addKeeperListener } from 'react-keepalive-router'
 
 const index = () => {
   useEffect(()=>{
@@ -50,25 +54,53 @@ const index = () => {
     <div >
       <Router  >
       <Meuns/>
-      <KeepliveRouterSwitch>
+      <KeepaliveRouterSwitch>
           <Route path={'/index'} component={Index} ></Route>
           <Route path={'/list'} component={List} ></Route>
           { /* 我们将详情页加入缓存 */ }
-          <KeepliveRoute path={'/detail'} component={ Detail } ></KeepliveRoute>
+          <KeepaliveRoute path={'/detail'} component={ Detail } ></KeepaliveRoute>
           <Redirect from='/*' to='/index' />
-       </KeepliveRouterSwitch>
+       </KeepaliveRouterSwitch>
       </Router>
     </div>
   </div>
 }
+````
+
+
+这里应该注意⚠️的是对于复杂的路由结构。或者KeepaliveRouterSwitch 包裹的子组件不是Route ,我们要给 `KeepaliveRouterSwitch` 增加特有的属性 `withoutRoute` 就可以了。如下例子🌰🌰🌰：
+
+**例子一**
+
+````jsx
+<KeepaliveRouterSwitch withoutRoute >
+  <div>
+     <Route path="/a" component={ComponentA}  />
+     <Route path="/b" component={ComponentB}  />
+
+  </div>
+</KeepaliveRouterSwitch>
 
 ````
 
-**在当前版本中⚠️⚠️⚠️如果 KeepliveRoute 如果没有被 KeepliveRouterSwitch包裹就会失去缓存作用。**
+**例子二**
+
+或者我们可以使用 `renderRoutes` 等`api`配合 `KeepliveRouterSwitch` 使用 。
+
+````jsx
+import {renderRoutes} from "react-router-config"
+<KeepliveRouterSwitch withoutRoute  >{ renderRoutes(routes) }</KeepliveRouterSwitch> 
+````
+
+
+#### KeepaliveRoute
+
+`KeepaliveRoute` 基本使用和 `Route`没有任何区别。
+
+
+**在当前版本中⚠️⚠️⚠️如果 `KeepaliveRoute` 如果没有被 `KeepaliveRouterSwitch`包裹就会失去缓存作用。**
 
 **效果**
-
-
 
 
 ![demo演示](https://raw.githubusercontent.com/AlienZhaolin/react-keepalive-router/master/md/111.gif)

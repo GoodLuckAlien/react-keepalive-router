@@ -1,7 +1,7 @@
 {
   "name": "react-keepalive-router",
   "version": "1.0.6",
-  "description": "",
+  "description": "基于`react 16.8+` ,`react-router 4+` 开发的`react`缓存组件，可以用于缓存页面组件，类似`vue`的`keepalive`包裹`vue-router`的效果功能。",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,7 +18,7 @@
   "peerDependencies": {
     "react": ">=16.8",
     "react-router-dom": ">=4",
-    "invariant":">=2"
+    "invariant": ">=2"
   },
   "author": "alien",
   "license": "ISC",
@@ -31,5 +31,8 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-uglify": "^6.0.4"
+  },
+  "dependencies": {
+    "invariant": "^2.2.4"
   }
 }

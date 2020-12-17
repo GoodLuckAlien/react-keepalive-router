@@ -2,7 +2,7 @@ import React , { useContext } from 'react'
 import {Route} from 'react-router-dom'
 import invariant from 'invariant'
 
-import CacheContext from '../core/cacheContext' 
+import CacheContext from '../core/cacheContext'
 import {isFuntion} from '../utils/index'
 import {keeperCallbackQuene} from '../core/keeper'
 import {
@@ -60,7 +60,7 @@ class CacheRoute extends Route {
 
   componentWillReceiveProps(curProps) {
     const { cacheState } = curProps
-    if(!cacheState) return 
+    if(!cacheState) return
     this.keepliveState = cacheState[this.getAndcheckCacheKey()].state
   }
 
@@ -69,7 +69,7 @@ class CacheRoute extends Route {
     const cacheKey = cacheId || path
     invariant(
       cacheKey,
-      'Keepliveloute must have a cacheId'
+      'KeepliveRoute must have a cacheId'
     )
     return cacheKey
   }
@@ -127,7 +127,10 @@ const KeepliveRoute = (props)=>{
     const { cacheState } = props
     const value = useContext(CacheContext) || {}
     if(cacheState) return <CacheRoute {...props} />
-    else return  <CacheRoute {...props} {...value} iskeep  />
+    else return  <CacheRoute {...props}
+        {...value}
+        iskeep
+                 />
 }
 
 KeepliveRoute.__componentType = KEEPLIVE_ROUTE_COMPONENT

@@ -8,7 +8,8 @@ import {
   ACITON_UNACTIVE,
   ACTION_UNACTUVED,
   ACTION_RESERT,
-  ACTION_DESTORYED
+  ACTION_DESTORYED,
+  ACTION_CLEAR
 } from '../utils/const'
 import {
   isString,
@@ -122,11 +123,19 @@ const useKeeper = () => useReducer((state, action) => {
                   destoryState(state,keep)
                 })
               }
-
               return state
-              /* 销毁 */
+              /* 销毁单个state */
             case ACTION_DESTORYED:
               delete state[payload]
+              return {
+                ...state
+              }
+            case ACTION_CLEAR:
+              Object.keys(state).forEach(keep => {
+                 if( state[keep].state !== ACTION_ACTIVED && ( state[keep].state === 'destory' ||  state[keep].lastState === 'destory'  )){
+                   delete state[keep]
+                 }
+              })
               return {
                 ...state
               }

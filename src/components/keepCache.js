@@ -95,4 +95,18 @@ export const GetCacheContext = ({children, cacheDispatch}) => {
   </CacheContext.Consumer>
 }
 
-export const useCacheDispatch = () => cacheDispatchCurrent
+const nextTick = (cb)=> Promise.resolve().then(cb)
+
+export const useCacheDispatch = () => (action)=> {
+  const { type } = action
+  if( !cacheDispatchCurrent ) return
+  if(type === 'reset'){
+    Promise.resolve().then(()=> {
+      cacheDispatchCurrent(action)
+      nextTick(()=> cacheDispatchCurrent({ type :'clear'  }))
+    } )
+  }else{
+     nextTick(()=>cacheDispatchCurrent(action))
+  }
+
+}

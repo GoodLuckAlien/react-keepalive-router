@@ -1,5 +1,5 @@
 import React , { useContext } from 'react'
-import {Route} from 'react-router-dom'
+import {Route , withRouter} from 'react-router-dom'
 import invariant from 'invariant'
 
 import CacheContext from '../core/cacheContext'
@@ -20,7 +20,7 @@ class CacheRoute extends Route {
     this.parentNode = null
     this.keepliveState = ''
     this.componentCur = null
-    const {children, component,iskeep, render, cacheDispatch, cacheState} = prop
+    const {children, component,iskeep, render, cacheDispatch, cacheState, history, location } = prop
     if (iskeep && cacheDispatch && cacheState ) {
       /* 如果当前 KeepliveRoute 没有被 KeepliveRouterSwitch 包裹 ，那么 KeepliveRoute 就会失去缓存作用， 就会按照正常route处理 */
       const cacheId = this.getAndcheckCacheKey()
@@ -31,6 +31,7 @@ class CacheRoute extends Route {
         })
       })
       if (!cacheState[cacheId] || (cacheState[cacheId] && cacheState[cacheId].state === 'destory')) {
+        const  WithRouterComponent = history && location ? component : withRouter(component)
         cacheDispatch({
           type: ACITON_CREATED,
           payload: {
@@ -41,7 +42,7 @@ class CacheRoute extends Route {
                 ? children({...this.props})
                 : children
               : component
-                ? React.createElement(component, {...this.props})
+                ? React.createElement(WithRouterComponent, {...this.props})
                 : render
                   ? render({...this.props})
                   : null

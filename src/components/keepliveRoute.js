@@ -20,31 +20,33 @@ class CacheRoute extends Route {
     this.parentNode = null
     this.keepliveState = ''
     this.componentCur = null
-    const {children, component,iskeep, render, cacheDispatch, cacheState, history, location } = prop
+    const {children, component,iskeep, render,  cacheState, ...otherProps } = prop
+    const { cacheDispatch, history, location } = otherProps
     if (iskeep && cacheDispatch && cacheState ) {
       /* 如果当前 KeepliveRoute 没有被 KeepliveRouterSwitch 包裹 ，那么 KeepliveRoute 就会失去缓存作用， 就会按照正常route处理 */
       const cacheId = this.getAndcheckCacheKey()
       /* 执行监听函数 */
       Promise.resolve().then(() => {
         keeperCallbackQuene.forEach(cb => {
-          isFuntion(cb) && cb({...this.props}, this.getAndcheckCacheKey())
+          isFuntion(cb) && cb({...otherProps}, this.getAndcheckCacheKey())
         })
       })
       if (!cacheState[cacheId] || (cacheState[cacheId] && cacheState[cacheId].state === 'destory')) {
         const  WithRouterComponent = history && location ? component : withRouter(component)
+
         cacheDispatch({
           type: ACITON_CREATED,
           payload: {
-            cacheId, // React.createElement(component || render || children, {...router})
+            cacheId,
             load: this.injectDom.bind(this),
             children: () => children
               ? isFuntion(children)
-                ? children({...this.props})
+                ? children({ ...otherProps })
                 : children
               : component
-                ? React.createElement(WithRouterComponent, {...this.props})
+                ? React.createElement(WithRouterComponent, { ...otherProps })
                 : render
-                  ? render({...this.props})
+                  ? render({ ...otherProps })
                   : null
           }
         })
@@ -128,10 +130,12 @@ const KeepliveRoute = (props)=>{
     const { cacheState } = props
     const value = useContext(CacheContext) || {}
     if(cacheState) return <CacheRoute {...props} />
-    else return  <CacheRoute {...props}
+    else return (
+    <CacheRoute
+        {...props}
         {...value}
         iskeep
-                 />
+    />)
 }
 
 KeepliveRoute.__componentType = KEEPLIVE_ROUTE_COMPONENT

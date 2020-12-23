@@ -83,6 +83,7 @@ const KeepSwitch = ({children, withoutRoute = false, deep = true,...props}) => {
        }catch(e){}
     }
   },[])
+
   if (ishasRouterSwitch || deep) {
     return <Cache {...props} >
       {

@@ -15,6 +15,7 @@ const isKeepliveRouter = child => child.type.__componentType === KEEPLIVE_ROUTE_
 
 class KeepliveRouterSwitch extends Switch {
 
+
   constructor(props, ...arg) {
     super(props, ...arg)
     const {ishasRouterSwitch, children, cacheDispatch} = props
@@ -42,7 +43,10 @@ class KeepliveRouterSwitch extends Switch {
         return match
           ? isKeepliveRouter(element)
             ? <CacheContext.Consumer>
-              {context => cloneElement(element, {location, history, computedMatch: match, cacheDispatch, match,iskeep: true, ...context})}
+              {context => {
+                const cacheId = element.props.cacheId || element.props.path
+                return cloneElement(element, { cacheId ,location, history, computedMatch: match, cacheDispatch, match,iskeep: true, ...context})
+              }}
             </CacheContext.Consumer>
             : cloneElement(element, {location, history, computedMatch: match, match,cacheDispatch})
           : null

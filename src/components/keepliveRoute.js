@@ -1,9 +1,10 @@
 import React , { useContext } from 'react'
-import {Route , withRouter} from 'react-router-dom'
+import {Route , withRouter ,useLocation ,matchPath } from 'react-router-dom'
 import invariant from 'invariant'
 
 import CacheContext from '../core/cacheContext'
 import {isFuntion} from '../utils/index'
+import { resolveCacheDispatch } from './keepCache'
 import {keeperCallbackQuene} from '../core/keeper'
 import {
   KEEPLIVE_ROUTE_COMPONENT,
@@ -14,15 +15,21 @@ import {
   ACTION_UNACTUVED
 } from '../utils/const'
 
-class CacheRoute extends Route {
+class CacheRoute extends React.Component {
   constructor(prop, ...arg) {
     super(prop, ...arg)
     this.parentNode = null
     this.keepliveState = ''
     this.componentCur = null
     const {children, component,iskeep, render,  cacheState, ...otherProps } = prop
-    const { cacheDispatch, history, location } = otherProps
-    if (iskeep && cacheDispatch && cacheState ) {
+    const { cacheDispatch, history, location , computedMatch ,path } = otherProps
+
+    const match = computedMatch
+        ? this.props.computedMatch
+        : path
+        ? matchPath(location.pathname, this.props)
+        : null
+    if (iskeep && cacheDispatch && cacheState && match ) {
       /* 如果当前 KeepliveRoute 没有被 KeepliveRouterSwitch 包裹 ，那么 KeepliveRoute 就会失去缓存作用， 就会按照正常route处理 */
       const cacheId = this.getAndcheckCacheKey()
       /* 执行监听函数 */
@@ -33,6 +40,10 @@ class CacheRoute extends Route {
       })
       if (!cacheState[cacheId] || (cacheState[cacheId] && cacheState[cacheId].state === 'destory')) {
         const  WithRouterComponent = history && location ? component : withRouter(component)
+
+        const useCacheDispatch = resolveCacheDispatch(cacheDispatch)
+
+        otherProps.cacheDispatch = useCacheDispatch()
 
         cacheDispatch({
           type: ACITON_CREATED,
@@ -55,10 +66,11 @@ class CacheRoute extends Route {
         this.keepliveState = cacheState[cacheId].state
       }
 
-      this.render = () => {
-        return <div ref={node => (this.parentNode = node)} />
-      }
     }
+  }
+
+  render(){
+    return <div ref={node => (this.parentNode = node)} />
   }
 
   componentWillReceiveProps(curProps) {
@@ -117,7 +129,6 @@ class CacheRoute extends Route {
 
     }
   }
-
   componentWillUnmount() {
     const {iskeep} = this.props
     if (!iskeep) return
@@ -126,16 +137,27 @@ class CacheRoute extends Route {
 
 }
 
+
 const KeepliveRoute = (props)=>{
-    const { cacheState } = props
+    const { cacheState , path } = props
     const value = useContext(CacheContext) || {}
-    if(cacheState) return <CacheRoute {...props} />
+    const location = useLocation()
+    if(cacheState) return <Route  path={path}
+        render={()=><CacheRoute {...props} />}
+                          />
     else return (
-    <CacheRoute
-        {...props}
-        {...value}
-        iskeep
-    />)
+      /* 对于外层没有 switch 包裹的结构，我们需要一个 `控制器` 来控制 组件的 挂载与销毁 , 这里用 Route 刚好 */
+      <Route  path={path}
+          render={()=>{
+        return  <CacheRoute {...props}
+            {...value}
+            iskeep
+            location={location}
+                />
+      }}
+      />
+
+    )
 }
 
 KeepliveRoute.__componentType = KEEPLIVE_ROUTE_COMPONENT

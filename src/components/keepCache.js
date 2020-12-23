@@ -58,7 +58,7 @@ const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState, load
     }
   }, [state])
   return <div ref={curDom}
-      style={{display: state === ACTION_UNACTUVED ? 'none' : 'block'}}
+      style={{display: state === ACTION_UNACTUVED ? 'none' : 'block' }}
          >
     {(state === ACTION_ACTIVE || state === ACTION_ACTIVED || state === ACITON_UNACTIVE || state === ACTION_UNACTUVED) ? <UpdateComponent>{children()}</UpdateComponent> : null}
   </div>
@@ -96,17 +96,23 @@ export const GetCacheContext = ({children, cacheDispatch}) => {
 }
 
 const nextTick = (cb)=> Promise.resolve().then(cb)
+let timer = null
 
-export const useCacheDispatch = () => (action)=> {
+export const resolveCacheDispatch = ( dispatch ) =>  ()  =>  (action) => {
   const { type } = action
-  if( !cacheDispatchCurrent ) return
+  const cacheDispatch = dispatch || cacheDispatchCurrent
+  if( !cacheDispatch ) return
   if(type === 'reset'){
-    Promise.resolve().then(()=> {
-      cacheDispatchCurrent(action)
-      nextTick(()=> cacheDispatchCurrent({ type :'clear'  }))
-    } )
+    if(timer) clearTimeout(timer)
+    timer = setTimeout(()=>{
+      cacheDispatch(action)
+      nextTick(()=> {
+        cacheDispatch({ type :'clear'  })
+      })
+    },50)
   }else{
-     nextTick(()=>cacheDispatchCurrent(action))
+    cacheDispatch(action)
   }
-
 }
+
+export const useCacheDispatch = resolveCacheDispatch( cacheDispatchCurrent  )

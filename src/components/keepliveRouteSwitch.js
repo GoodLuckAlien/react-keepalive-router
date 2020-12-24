@@ -1,12 +1,12 @@
 
-import React, {useMemo, useEffect, useRef} from 'react'
+import React, {useMemo, useEffect} from 'react'
 import {Switch, matchPath, useHistory, __RouterContext, withRouter} from 'react-router-dom'
 import invariant from 'invariant'
 
 import Cache , { beforeSwitchDestory } from './keepCache'
 import {KEEPLIVE_ROUTE_SWITCH, KEEPLIVE_ROUTE_COMPONENT  } from '../utils/const'
 import {isFuntion, isObject} from '../utils/index'
-import CacheContext from '../core/cacheContext'
+
 
 const {isValidElement, cloneElement} = React
 const {forEach} = React.Children
@@ -14,7 +14,6 @@ const {forEach} = React.Children
 const isKeepliveRouter = child => child.type.__componentType === KEEPLIVE_ROUTE_COMPONENT
 
 class KeepliveRouterSwitch extends Switch {
-
 
   constructor(props, ...arg) {
     super(props, ...arg)
@@ -40,15 +39,12 @@ class KeepliveRouterSwitch extends Switch {
               : this.context.match
           }
         })
+        /* 防止路由渲染过程中，切换路由，页面不刷新情况，我们这里加入key,提高渲染，防止渲染异常 */
+        const key = element.props.cacheId ||element.props.path
         return match
           ? isKeepliveRouter(element)
-            ? <CacheContext.Consumer>
-              {context => {
-                const cacheId = element.props.cacheId || element.props.path
-                return cloneElement(element, { cacheId ,location, history, computedMatch: match, cacheDispatch, match,iskeep: true, ...context})
-              }}
-            </CacheContext.Consumer>
-            : cloneElement(element, {location, history, computedMatch: match, match,cacheDispatch})
+            ? cloneElement(element, { key, location, history, computedMatch: match, cacheDispatch, match,iskeep: true})
+            : cloneElement(element, { key, location, history, computedMatch: match, cacheDispatch, match})
           : null
       }
       return __render.call(this)

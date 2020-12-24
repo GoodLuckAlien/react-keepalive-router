@@ -1,5 +1,5 @@
-import React , { useContext } from 'react'
-import {Route , withRouter ,useLocation ,matchPath } from 'react-router-dom'
+import React , { useContext, useEffect } from 'react'
+import {Route , withRouter  ,matchPath } from 'react-router-dom'
 import invariant from 'invariant'
 
 import CacheContext from '../core/cacheContext'
@@ -15,20 +15,20 @@ import {
   ACTION_UNACTUVED
 } from '../utils/const'
 
-class CacheRoute extends React.Component {
+class CacheRoute extends Route {
+
+  cacheMatch=null
+
   constructor(prop, ...arg) {
     super(prop, ...arg)
     this.parentNode = null
     this.keepliveState = ''
     this.componentCur = null
     const {children, component,iskeep, render,  cacheState, ...otherProps } = prop
-    const { cacheDispatch, history, location , computedMatch ,path } = otherProps
-
-    const match = computedMatch
-        ? this.props.computedMatch
-        : path
-        ? matchPath(location.pathname, this.props)
-        : null
+    const { cacheDispatch, history, location } = otherProps
+    /* 记录路由是否匹配 */
+    const match = this.computerMatchRouter(prop)
+    this.cacheMatch={...match}
     if (iskeep && cacheDispatch && cacheState && match ) {
       /* 如果当前 KeepliveRoute 没有被 KeepliveRouterSwitch 包裹 ，那么 KeepliveRoute 就会失去缓存作用， 就会按照正常route处理 */
       const cacheId = this.getAndcheckCacheKey()
@@ -40,11 +40,10 @@ class CacheRoute extends React.Component {
       })
       if (!cacheState[cacheId] || (cacheState[cacheId] && cacheState[cacheId].state === 'destory')) {
         const  WithRouterComponent = history && location ? component : withRouter(component)
-
+       /* 对 cacheDispatch 尽心处理 */
         const useCacheDispatch = resolveCacheDispatch(cacheDispatch)
 
         otherProps.cacheDispatch = useCacheDispatch()
-
         cacheDispatch({
           type: ACITON_CREATED,
           payload: {
@@ -65,18 +64,31 @@ class CacheRoute extends React.Component {
       } else if (cacheState[cacheId]) {
         this.keepliveState = cacheState[cacheId].state
       }
+      this.render = ()=>{
+        return <div ref={node => (this.parentNode = node)} />
+      }
 
     }
   }
-
-  render(){
-    return <div ref={node => (this.parentNode = node)} />
+  /* 路由是否匹配 */
+  computerMatchRouter=(props)=>{
+     const { computedMatch ,location ,path } = props
+     return computedMatch
+        ? computedMatch
+        : path
+        ? matchPath(location.pathname, props)
+        : null
   }
 
+
   componentWillReceiveProps(curProps) {
-    const { cacheState } = curProps
-    if(!cacheState) return
+    const { cacheState ,iskeep  } = curProps
+    if(!cacheState || !iskeep ) return
     this.keepliveState = cacheState[this.getAndcheckCacheKey()].state
+    const newMatch = (this.computerMatchRouter(curProps) || {})
+    if(this.keepliveState === 'actived' && newMatch && this.cacheMatch && newMatch.path !== this.cacheMatch.path && newMatch.url !==  this.cacheMatch.url  ){
+      //TODO: 路由不一致情况
+    }
   }
 
   getAndcheckCacheKey = () => {
@@ -139,24 +151,22 @@ class CacheRoute extends React.Component {
 
 
 const KeepliveRoute = (props)=>{
-    const { cacheState , path } = props
+    const { path } = props
     const value = useContext(CacheContext) || {}
-    const location = useLocation()
-    if(cacheState) return <Route  path={path}
-        render={()=><CacheRoute {...props} />}
-                          />
-    else return (
-      /* 对于外层没有 switch 包裹的结构，我们需要一个 `控制器` 来控制 组件的 挂载与销毁 , 这里用 Route 刚好 */
-      <Route  path={path}
-          render={()=>{
-        return  <CacheRoute {...props}
-            {...value}
-            iskeep
-            location={location}
-                />
-      }}
-      />
-
+    const { cacheState } = value
+    return (
+        /* 对于外层没有 switch 包裹的结构，我们需要一个 `控制器` 来控制 组件的 挂载与销毁 , 这里用 Route 刚好 */
+        <Route  path={path}
+            render={(historyProps)=>{
+          return (
+          <CacheRoute
+              {...historyProps}
+              {...props}
+              {...value}
+              iskeep={cacheState ? true :false}
+          />)
+    }}
+        />
     )
 }
 

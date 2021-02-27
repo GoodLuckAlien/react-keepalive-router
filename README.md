@@ -105,7 +105,7 @@ import {renderRoutes} from "react-router-config"
 ![demo演示](https://raw.githubusercontent.com/AlienZhaolin/react-keepalive-router/master/md/111.gif)
 
 
-
+![demo演示1](https://raw.githubusercontent.com/AlienZhaolin/react-keepalive-router/master/md/form.gif)
 
 ### 2 其他功能
 

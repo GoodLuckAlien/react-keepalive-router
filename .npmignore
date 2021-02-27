@@ -8,3 +8,4 @@ md
 .prettierrc
 rollup.config.js
 yarn.lock
+example

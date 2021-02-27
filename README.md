@@ -102,8 +102,8 @@ import {renderRoutes} from "react-router-config"
 
 **效果**
 
-
 ![demo演示](https://raw.githubusercontent.com/AlienZhaolin/react-keepalive-router/master/md/111.gif)
+
 
 
 
@@ -161,4 +161,100 @@ cacheDispatch({ type:'reset',payload:'cacheId' })
 
 ````js
 cacheDispatch({ type:'reset',payload:['cacheId1'，'cacheId2'] }) 
+````
+
+#### 3 缓存scroll ，增加缓存滚动条功能
+
+
+
+#### 4 生命周期
+
+`react-keepalive-router`加入了全新的页面组件生命周期 `actived` 和 `unActived`, `actived` 作为缓存路由组件激活时候用，初始化的时候会默认执行一次 ,  `unActived`作为路由组件缓存完成后调用。但是生命周期需要用一个`HOC`组件`keepaliveLifeCycle`包裹。
+
+使用：
+
+![demo演示](https://raw.githubusercontent.com/AlienZhaolin/react-keepalive-router/master/md/lifecycle.gif)
+
+````js
+import React   from 'react'
+
+import { keepaliveLifeCycle } from 'react-keepalive-router'
+import './style.scss'
+
+@keepaliveLifeCycle
+class index extends React.Component<any,any>{   
+    
+    state={
+        activedNumber:0,
+        unActivedNumber:0
+    }
+    actived(){
+        this.setState({
+            activedNumber:this.state.activedNumber + 1
+        })
+    }
+    unActived(){
+        this.setState({
+            unActivedNumber:this.state.unActivedNumber + 1
+        })
+    }
+    render(){
+        const { activedNumber , unActivedNumber } = this.state
+        return <div  style={ { marginTop :'50px' } }  >
+           <div> 页面 actived 次数： { activedNumber } </div>
+           <div> 页面 unActived 次数：{ unActivedNumber  } </div>
+        </div>
+    }
+}
+
+export default index
+````
+
+效果：
+
+
+
+
+这里注意的是 `keepaliveLifeCycle` 要是组件最近的 `Hoc`。
+
+比如 
+
+装饰器模式下：
+**🙅错误做法**
+````js
+@keepaliveLifeCycle
+@withStyles(styles)
+@withRouter
+class Index extends React.Componen{
+   
+}
+````
+
+**🙆正确做法**
+````js
+@withStyles(styles)
+@withRouter
+@keepaliveLifeCycle
+class Index extends React.Componen{
+   
+}
+````
+
+非装饰器模式下：
+**🙅错误做法**
+````js
+class Index extends React.Componen{
+
+}
+
+export default keepaliveLifeCycle( withRouter(Index) )
+````
+
+**🙆正确做法**
+````js
+class Index extends React.Componen{
+   
+}
+
+export default withRouter( keepaliveLifeCycle(Index) )
 ````

@@ -1,11 +1,11 @@
-import React , { useContext, useEffect } from 'react'
+import React , { useContext } from 'react'
 import {Route , withRouter  ,matchPath } from 'react-router-dom'
 import invariant from 'invariant'
 
 import CacheContext from '../core/cacheContext'
 import {isFuntion} from '../utils/index'
 import { resolveCacheDispatch } from './keepCache'
-import {keeperCallbackQuene} from '../core/keeper'
+import {keeperCallbackQuene ,scrolls } from '../core/keeper'
 import {
   KEEPLIVE_ROUTE_COMPONENT,
   ACITON_CREATED,
@@ -39,11 +39,13 @@ class CacheRoute extends Route {
         })
       })
       if (!cacheState[cacheId] || (cacheState[cacheId] && cacheState[cacheId].state === 'destory')) {
-        const  WithRouterComponent = history && location ? component : withRouter(component)
-       /* 对 cacheDispatch 尽心处理 */
-        const useCacheDispatch = resolveCacheDispatch(cacheDispatch)
+        let  WithRouterComponent = history && location ? component : withRouter(component)
 
+        /* 对 cacheDispatch 处理 */
+        const useCacheDispatch = resolveCacheDispatch(cacheDispatch)
         otherProps.cacheDispatch = useCacheDispatch()
+        const childrenProps = { ...otherProps,cacheId }
+
         cacheDispatch({
           type: ACITON_CREATED,
           payload: {
@@ -51,12 +53,12 @@ class CacheRoute extends Route {
             load: this.injectDom.bind(this),
             children: () => children
               ? isFuntion(children)
-                ? children({ ...otherProps })
+                ? children(childrenProps)
                 : children
               : component
-                ? React.createElement(WithRouterComponent, { ...otherProps })
+                ? React.createElement(WithRouterComponent, childrenProps)
                 : render
-                  ? render({ ...otherProps })
+                  ? render(childrenProps)
                   : null
           }
         })
@@ -81,7 +83,7 @@ class CacheRoute extends Route {
   }
 
 
-  componentWillReceiveProps(curProps) {
+  UNSAFE_componentWillReceiveProps(curProps) {
     const { cacheState ,iskeep  } = curProps
     if(!cacheState || !iskeep ) return
     this.keepliveState = cacheState[this.getAndcheckCacheKey()].state
@@ -103,7 +105,7 @@ class CacheRoute extends Route {
 
   componentDidMount() {
     /* 如果第一次创建keepliveRouter,那么激活keepliveRouter */
-    const {cacheDispatch, iskeep} = this.props
+    const {cacheDispatch, iskeep, scroll } = this.props
     if (!iskeep) return
     if (this.keepliveState === ACITON_CREATED) {
       cacheDispatch({
@@ -117,6 +119,21 @@ class CacheRoute extends Route {
         payload: {cacheId: this.getAndcheckCacheKey(), load: this.injectDom.bind(this)}
       })
     }
+    if(scroll){
+      this.parentNode.addEventListener('scroll', this.handerKeepScoll ,true)
+    }
+    const cacheId = this.getAndcheckCacheKey()
+    if(scrolls[cacheId]){
+       const { scrollTarget , scrollTop } = scrolls[cacheId]  
+       this.scrollTimer = setTimeout(()=>{
+          if(scrollTarget) scrollTarget.scrollTop = scrollTop
+       },0)
+    }
+
+  }
+
+  handerKeepScoll= (e) => {
+    if(!this.scrollTarget ) this.scrollTarget = e.target
   }
 
   injectDom = currentNode => {
@@ -131,11 +148,17 @@ class CacheRoute extends Route {
   exportDom = () => {
     const {cacheDispatch} = this.props
     const cacheId = this.getAndcheckCacheKey()
+    if(this.scrollTarget){
+       scrolls[cacheId] = {
+        scrollTarget:this.scrollTarget,
+        scrollTop:this.scrollTarget.scrollTop
+      }
+    }
     try {
       /* 切换keepalive缓存状态 */
       cacheDispatch({
         type: ACITON_UNACTIVE,
-        payload: cacheId
+        payload:cacheId
       })
     } catch (e) {
 
@@ -145,6 +168,8 @@ class CacheRoute extends Route {
     const {iskeep} = this.props
     if (!iskeep) return
     this.exportDom()
+    this.parentNode.removeEventListener('scroll',this.handerKeepScoll,true)
+    if(this.scrollTimer) clearTimeout(this.scrollTimer)
   }
 
 }

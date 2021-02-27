@@ -1,13 +1,13 @@
 import React, {useRef, useEffect, useMemo, memo, useContext} from 'react'
 
 import CacheContext from '../core/cacheContext'
-import useKeeper from '../core/keeper'
+import useKeeper , { scrolls } from '../core/keeper'
 import {ACTION_ACTIVE, ACTION_ACTIVED, ACITON_UNACTIVE, ACTION_UNACTUVED, ACTION_DESTORYED} from '../utils/const'
 import {isFuntion} from '../utils/index'
 
 
 export const beforeSwitchDestory = {}
-const keepChange = (pre, next) => pre.state === next.state
+const keepChange = (pre, next) => pre.state === next.state 
 let cacheDispatchCurrent = null
 
 export const handerReactComponent = (children, prop) =>
@@ -18,7 +18,7 @@ export const handerReactComponent = (children, prop) =>
       : null
 const UpdateComponent = memo(({children}) => children, () => true)
 
-const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState, load = () => { }, router = {}}) => {
+const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState,load = () => {}, router = {}}) => {
   const parentCurDom = useRef(null)
   const curDom = useRef(null)
   const curComponent = useRef(null)
@@ -27,6 +27,7 @@ const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState, load
       if(parentCurDom.current && curDom.current ) parentCurDom.current.appendChild(curDom.current)
     }
     return function(){
+       if(scrolls[cacheId]) delete scrolls[cacheId]
        delete beforeSwitchDestory[cacheId]
     }
   },[])
@@ -68,11 +69,13 @@ function Cache({children, ...prop}) {
   const [cacheState, cacheDispatch] = useKeeper()
   return <CacheContext.Provider value={{cacheState, cacheDispatch}} >
     {
-      Object.keys(cacheState).map(cacheId => <CacheKeepItem cacheId={cacheId}
-          key={cacheId}
-          {...cacheState[cacheId]}
-          dispatch={cacheDispatch}
-                                             />)
+      Object.keys(cacheState).map(cacheId =>{
+        return  <CacheKeepItem cacheId={cacheId}
+             key={cacheId}
+             {...cacheState[cacheId]}
+              dispatch={cacheDispatch}
+        />
+      })
     }
     {!cacheDispatchCurrent && <GetCacheContext cacheDispatch={c => (cacheDispatchCurrent = c)} />}
     {/* 提供对外的cacheDispatch方法 */}

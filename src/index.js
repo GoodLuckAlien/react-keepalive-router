@@ -6,4 +6,6 @@ import {GetCacheContext, useCacheDispatch} from './components/keepCache'
 import cacheRouterContext from './core/cacheContext'
 import {addKeeperListener} from './core/keeper'
 
-export {KeepaliveRoute, KeepaliveRouterSwitch, cacheRouterContext, GetCacheContext, useCacheDispatch, addKeeperListener}
+import keepaliveLifeCycle from './hoc/lifecycle'
+
+export {KeepaliveRoute, KeepaliveRouterSwitch, cacheRouterContext, GetCacheContext, useCacheDispatch, addKeeperListener,keepaliveLifeCycle}

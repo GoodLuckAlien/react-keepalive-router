@@ -23,6 +23,7 @@ export default [
         })
       ]
     },
+    /* 压缩` */
     {
       input: 'src/index.js',
       output: {

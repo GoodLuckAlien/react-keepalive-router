@@ -13,12 +13,15 @@ import {
 } from '../utils/const'
 import {
   isString,
-  isArray
+  isArray,
+  isFuntion
 } from '../utils/index'
 
 export const keeperCallbackQuene = []
+export const lifeCycles = {}
+export const scrolls = {}
 
-export const addKeeperListener = cb => {
+export const addKeeperListener =  (cb) => {
   keeperCallbackQuene.push(cb)
   return () => {
     const keepIndex = keeperCallbackQuene.findIndex(callback => cb === callback)
@@ -82,6 +85,8 @@ const useKeeper = () => useReducer((state, action) => {
             lastState: state[payload].state,
             state: ACTION_ACTIVED
           }
+          const lifeCycleFunc = lifeCycles[payload]
+          lifeCycleFunc && isFuntion(lifeCycleFunc) && lifeCycleFunc(ACTION_ACTIVED)
         }
         return {
           ...state
@@ -106,6 +111,8 @@ const useKeeper = () => useReducer((state, action) => {
                 lastState: state[payload].state,
                 state: ACTION_UNACTUVED
               }
+              const lifeCycleFunc = lifeCycles[payload]
+              lifeCycleFunc && isFuntion(lifeCycleFunc) && lifeCycleFunc(ACTION_UNACTUVED)
             }
             return {
               ...state

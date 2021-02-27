@@ -1,0 +1,40 @@
+.page{
+    position: fixed;
+    left:0;
+    right: 0;
+    top:0;
+    bottom: 0;
+    background-color: #ffff;
+    
+}
+.content{
+    position: absolute;
+    left:50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.title{
+    text-align: center;
+    font-size: 10px;
+    color: #ccc;
+}
+.btns{
+    padding-left: 30px;
+    button{
+        margin-right: 30px;
+    }
+}
+.routerLink{
+    margin-left: 15px;
+    color: #0366d6;
+    font-size: 14px;
+}
+.theStyle{
+    height: 50px;
+    background-color: #fff;
+    position: fixed;
+    left:0;
+    right:0;
+    top:0;
+    z-index: 10000;
+}

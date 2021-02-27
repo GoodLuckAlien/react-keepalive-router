@@ -1,0 +1,157 @@
+.list{
+    list-style: none;
+    background-color: pink;
+    padding: 10px 20px;
+    color: #fff;
+    height: 50px;
+    line-height: 50px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    margin-left: 24px;
+    margin-right: 24px;
+    font-weight: bold;
+    border-radius:10px ;
+}
+
+
+.list_box{
+    position: fixed;
+    left:0;
+    top:60px;
+    overflow: scroll;
+    bottom:0;
+    right: 0;
+}
+
+.goods_item {
+    line-height: 1!important;
+    height: 134px;
+    box-sizing: border-box;
+    padding-bottom: 16px;
+    display: flex;
+    margin-bottom: 50px;
+    position: relative;
+
+       .newPerson {
+          height: 34px;
+          transform: translateY(7px);
+          // top: -50px;
+          width: 122px;
+        }
+
+
+ 
+
+    .item_image {
+        height: 168px;
+        width: 168px;
+        transition: opacity 0.7s;
+        border-radius: 12px;
+        transform: translateY(-2px);
+    }
+
+    .item_content {
+        flex: 1;
+        box-sizing: border-box;
+        position: relative;
+        padding-left: 15px;
+
+        .goods_name {
+            font-family: PingFangSC-Regular;
+            font-size: 14px;
+            color: #303133;
+            letter-spacing: 0;
+            line-height: 18px;
+            letter-spacing: 0;
+            line-height: 18px;
+            text-overflow: -o-ellipsis-lastline;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-all;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            min-height: 37px;
+            -webkit-box-orient: vertical;
+            margin-bottom: 7px;
+        }
+
+        // .go_share {
+        //     border-radius: 29px;
+        //     height: 58px;
+        //     width: 150px;
+        //     position: absolute;
+        //     bottom: 0;
+        //     right: 0;
+        //     line-height: 58px;
+        //     text-align: center;
+        //     font-family: HYYakuHei-GEW;
+        //     font-size: 26px;
+        //     color: #FFFFFF;
+        //     letter-spacing: 0;
+        // }
+
+
+        .new_price {
+            position: relative;
+            height: 25px;
+            margin-bottom: 2px;
+            display: inline-block;
+            margin-left: -1px;
+            transform: translateY(5px);
+            .view {
+                display: inline-block;
+                font-family: JDZhengHT-Regular;
+                color: #f12e40;
+                letter-spacing: 0;
+
+            }
+
+            .one {
+                transform: translateX(7px);
+            }
+
+            .two {
+                font-size: 42px;
+                line-height: 36px;
+                transform: translateX(-1px);
+            }
+
+            .three {
+                font-size: 26px;
+                transform: translateX(-7px);
+            }
+        }
+
+        .hold_price {
+            height: 12px;
+        }
+
+        .old_price {
+            display: inline-block;
+            margin-left: 2px;
+            font-family: JDZhengHT-Regular;
+            font-size: 26px !important;
+            color: #C0C4CC !important;
+            letter-spacing: 0;
+            transform: translate(-5px,4px);
+            text-decoration: line-through;
+        }
+
+        .goods_tag {
+            height: 30px;
+            margin-bottom: 33px;
+            transform: translateY(-2px);
+            .ziying {
+                width: 52px;
+                height: 30px;
+                margin-right: 5px;
+            }
+
+            .peisong {
+                width: 96px;
+                height: 30px;
+            }
+        }
+    }
+}

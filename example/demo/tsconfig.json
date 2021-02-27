@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "strictNullChecks": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "jsx": "react",
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "target": "es6",
+        "module": "esnext",
+        "lib": [
+            "dom", 
+            "es7"
+        ]
+    },
+    "exclude": [
+        "node_modules",
+        "lib",
+        "es"
+    ]
+}

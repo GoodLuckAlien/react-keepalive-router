@@ -185,6 +185,7 @@ cacheDispatch({ type:'reset',payload:['cacheId1'，'cacheId2'] })
 
 
 
+
 ````js
 import React   from 'react'
 

@@ -165,6 +165,16 @@ cacheDispatch({ type:'reset',payload:['cacheId1'，'cacheId2'] })
 
 #### 3 缓存scroll ，增加缓存滚动条功能
 
+如果我们想要缓存列表 `scrollTop` 的位置 ,我们可以在 `KeepaliveRoute` 动态添加 `scroll` 属性 ( 目前仅支持y轴 )。 为什么加入`scroll`，我们这里考虑到，只有在想要缓存`scroll`的y值的时候，才进行缓存，避免不必要的事件监听和内存开销。
+
+````js
+ <KeepaliveRoute path={'/list2'} component={List2} scroll />
+````
+
+**效果**
+
+![scroll demo演示](https://raw.githubusercontent.com/AlienZhaolin/react-keepalive-router/master/md/scroll.gif)
+
 
 
 #### 4 生命周期
@@ -173,7 +183,7 @@ cacheDispatch({ type:'reset',payload:['cacheId1'，'cacheId2'] })
 
 使用：
 
-![demo演示](https://raw.githubusercontent.com/AlienZhaolin/react-keepalive-router/master/md/lifecycle.gif)
+
 
 ````js
 import React   from 'react'
@@ -213,7 +223,7 @@ export default index
 效果：
 
 
-
+![lifecycle demo演示](https://raw.githubusercontent.com/AlienZhaolin/react-keepalive-router/master/md/lifecycle.gif)
 
 这里注意的是 `keepaliveLifeCycle` 要是组件最近的 `Hoc`。
 

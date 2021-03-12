@@ -26,6 +26,7 @@ class index extends React.Component<any,any>{
         return <div  style={{ marginTop :'50px' }}  >
            <div> 页面 actived 次数： {activedNumber} </div>
            <div> 页面 unActived 次数：{unActivedNumber} </div>
+
         </div>
     }
 }

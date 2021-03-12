@@ -6,9 +6,9 @@ import React  from 'react'
 class Index extends React.Component<any,any>{
     constructor(prop){
         super(prop)
-        this.state = { 
+        this.state = {
             list: [ { id:1 , name: 'xixi' } ,{ id:2 , name: 'haha' },{ id:3 , name: 'heihei' } ],
-            number:1,
+            number:1
          }
     }
     render(){
@@ -18,10 +18,10 @@ class Index extends React.Component<any,any>{
            <br />
            <textarea placeholder="文本域" />
            <br />
-            { new Array(number).fill(0).map(()=> <span>{'🌟'}</span>) }
+            {new Array(number).fill(0).map(()=> <span>{'🌟'}</span>)}
          <br />
-           <button onClick={ ()=>{  this.setState({ number : number + 1 })  }} >🌟++</button> 
-           <button onClick={ ()=>{  this.setState({ number : number - 1 })  }} >🌟--</button>      
+           <button onClick={()=>{  this.setState({ number : number + 1 })  }} >🌟++</button>
+           <button onClick={()=>{  this.setState({ number : number - 1 })  }} >🌟--</button>
        </div>
     }
 }

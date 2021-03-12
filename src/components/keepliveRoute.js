@@ -124,7 +124,7 @@ class CacheRoute extends Route {
     }
     const cacheId = this.getAndcheckCacheKey()
     if(scrolls[cacheId]){
-       const { scrollTarget , scrollTop } = scrolls[cacheId]  
+       const { scrollTarget , scrollTop } = scrolls[cacheId]
        this.scrollTimer = setTimeout(()=>{
           if(scrollTarget) scrollTarget.scrollTop = scrollTop
        },0)

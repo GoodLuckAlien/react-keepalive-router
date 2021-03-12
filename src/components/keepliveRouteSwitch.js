@@ -39,13 +39,13 @@ class KeepliveRouterSwitch extends Switch {
               : this.context.match
           }
         })
-        /* 防止路由渲染过程中，切换路由，页面不刷新情况，我们这里加入key,提高渲染，防止渲染异常 */
+        /* 防止路由渲染过程中，切换路由，页面不刷新情况，我们这里加入key, 提高渲染，防止渲染异常 */
         const key = element.props.cacheId || element.props.path
         const scroll = element.props.scroll
 
         return match
           ? isKeepliveRouter(element)
-            ? cloneElement(element, { key, location, history, computedMatch: match, cacheDispatch, match,iskeep: true , scroll})
+            ? cloneElement(element, { key, location, history, computedMatch: match, cacheDispatch, match, iskeep: true , scroll})
             : cloneElement(element, { key, location, history, computedMatch: match, cacheDispatch, match})
           : null
       }

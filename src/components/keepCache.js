@@ -2,7 +2,7 @@ import React, {useRef, useEffect, useMemo, memo, useContext} from 'react'
 
 import CacheContext from '../core/cacheContext'
 import useKeeper , { scrolls } from '../core/keeper'
-import {ACTION_ACTIVE, ACTION_ACTIVED, ACITON_UNACTIVE, ACTION_UNACTUVED, ACTION_DESTORYED} from '../utils/const'
+import {ACTION_ACTIVE, ACTION_ACTIVED, ACITON_UNACTIVE, ACTION_UNACTIVED, ACTION_DESTORYED} from '../utils/const'
 import {isFuntion} from '../utils/index'
 
 
@@ -47,7 +47,7 @@ const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState,load 
         })
       } else {
         dispatch({
-          type: ACTION_UNACTUVED,
+          type: ACTION_UNACTIVED,
           payload: cacheId
         })
       }
@@ -59,9 +59,9 @@ const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState,load 
     }
   }, [state])
   return <div ref={curDom}
-      style={{display: state === ACTION_UNACTUVED ? 'none' : 'block' }}
+      style={{display: state === ACTION_UNACTIVED ? 'none' : 'block' }}
          >
-    {(state === ACTION_ACTIVE || state === ACTION_ACTIVED || state === ACITON_UNACTIVE || state === ACTION_UNACTUVED) ? <UpdateComponent>{children()}</UpdateComponent> : null}
+    {(state === ACTION_ACTIVE || state === ACTION_ACTIVED || state === ACITON_UNACTIVE || state === ACTION_UNACTIVED) ? <UpdateComponent>{children()}</UpdateComponent> : null}
   </div>
 }, keepChange)
 

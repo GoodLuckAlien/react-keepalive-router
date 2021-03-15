@@ -6,7 +6,7 @@ import {
   ACTION_ACTIVE,
   ACTION_ACTIVED,
   ACITON_UNACTIVE,
-  ACTION_UNACTUVED,
+  ACTION_UNACTIVED,
   ACTION_RESERT,
   ACTION_DESTORYED,
   ACTION_CLEAR
@@ -104,15 +104,15 @@ const useKeeper = () => useReducer((state, action) => {
             ...state
           }
           /* 休眠完成状态 */
-          case ACTION_UNACTUVED:
+          case ACTION_UNACTIVED:
             if (state[payload]) {
               state[payload] = {
                 ...state[payload],
                 lastState: state[payload].state,
-                state: ACTION_UNACTUVED
+                state: ACTION_UNACTIVED
               }
               const lifeCycleFunc = lifeCycles[payload]
-              lifeCycleFunc && isFuntion(lifeCycleFunc) && lifeCycleFunc(ACTION_UNACTUVED)
+              lifeCycleFunc && isFuntion(lifeCycleFunc) && lifeCycleFunc(ACTION_UNACTIVED)
             }
             return {
               ...state

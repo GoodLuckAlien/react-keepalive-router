@@ -12,7 +12,7 @@ import {
   ACTION_ACTIVE,
   ACTION_ACTIVED,
   ACITON_UNACTIVE,
-  ACTION_UNACTUVED
+  ACTION_UNACTIVED
 } from '../utils/const'
 
 class CacheRoute extends Route {
@@ -113,7 +113,7 @@ class CacheRoute extends Route {
         payload: {cacheId: this.getAndcheckCacheKey()}
       })
       /* 如果keeplive是休眠状态，那么复用节点再次激活 */
-    } else if (this.keepliveState === ACTION_UNACTUVED) {
+    } else if (this.keepliveState === ACTION_UNACTIVED) {
       cacheDispatch({
         type: ACTION_ACTIVE,
         payload: {cacheId: this.getAndcheckCacheKey(), load: this.injectDom.bind(this)}

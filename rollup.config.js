@@ -14,7 +14,8 @@ export default [
       external: [
         'react',
         'react-router-dom',
-        'invariant'
+        'invariant',
+        'hoist-non-react-statics'
       ],
       plugins: [
         resolve(),
@@ -34,7 +35,8 @@ export default [
       external: [
         'react',
         'react-router-dom',
-        'invariant'
+        'invariant',
+        'hoist-non-react-statics'
       ],
       plugins: [
         resolve(),

@@ -43,9 +43,10 @@ function keepaliveLifeCycle(Component) {
     }
     render = () => {
       const {
-        forwardedRef
+        forwardedRef,
+        ...otherProp
       } = this.props
-      return <SelfComponent {...this.props}
+      return <SelfComponent {...otherProp}
           ref={forwardedRef}
              />
     }

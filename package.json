@@ -33,6 +33,7 @@
     "rollup-plugin-uglify": "^6.0.4"
   },
   "dependencies": {
+    "hoist-non-react-statics": "^3.3.2",
     "invariant": "^2.2.4"
   }
 }

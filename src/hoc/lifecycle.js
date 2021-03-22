@@ -1,29 +1,63 @@
-
 import React from 'react'
+import hoistNonReactStatic from 'hoist-non-react-statics'
 
-import {lifeCycles} from '../core/keeper'
-import {isFuntion} from '../utils/index'
+import ExtendsSelfHoc from './extendsSelf'
+import {
+  lifeCycles
+} from '../core/keeper'
+import {
+  funCur,
+  isFuntion
+} from '../utils/index'
+
 
 function keepaliveLifeCycle(Component) {
-  return class Hoc extends React.Component {
-    cur = null
+  const isClassComponent = Component.prototype.setState && Component.prototype.isReactComponent
+  if (!isClassComponent) return Component
+  let callback = null
+  const SelfComponent = ExtendsSelfHoc(Component,funCur(() => callback))
+
+  class WrapComponent extends React.Component {
+    constructor() {
+      super()
+      this.cur = null
+      callback = (cur) => (this.cur=cur)
+    }
+
+    componentDidMount() {
+      const {
+        cacheId
+      } = this.props
+      cacheId && (lifeCycles[cacheId] = this.handerLifeCycle)
+    }
+    componentWillUnmount() {
+      const {
+        cacheId
+      } = this.props
+      delete lifeCycles[cacheId]
+    }
     handerLifeCycle = type => {
       if (!this.cur) return
       const lifeCycleFunc = this.cur[type]
       isFuntion(lifeCycleFunc) && lifeCycleFunc.call(this.cur)
     }
-    componentDidMount() {
-      const {cacheId} = this.props
-      cacheId && (lifeCycles[cacheId] = this.handerLifeCycle)
+    render = () => {
+      const {
+        forwardedRef
+      } = this.props
+      return <SelfComponent {...this.props}
+          ref={forwardedRef}
+             />
     }
-    componentWillUnmount() {
-      const {cacheId} = this.props
-      delete lifeCycles[cacheId]
-    }
-     render=() => <Component {...this.props}
-         ref={cur => (this.cur = cur)}
-                  />
   }
+
+  const forWardRefComponent = React.forwardRef((props, ref) => (
+     <WrapComponent forwardedRef={ref}
+         {...props}
+     />
+  ))
+
+  return hoistNonReactStatic(forWardRefComponent, SelfComponent)
 }
 
 export default keepaliveLifeCycle

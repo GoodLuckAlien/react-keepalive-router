@@ -1,3 +1,9 @@
+
+
+[![npm version](https://img.shields.io/npm/v/react-keepalive-router.svg?style=flat-square)](https://www.npmjs.org/package/react-keepalive-router)
+[![NPM Downloads](https://badgen.net/npm/dm/react-keepalive-router)](https://npmjs.org/package/react-keepalive-router)
+![](https://img.shields.io/github/stars/GoodLuckAlien/react-keepalive-router.svg?style=social&label=Star)
+
 # react-keepalive-router
 
 
@@ -8,6 +14,7 @@
 采用`react hooks`全新`api`,支持缓存路由，手动解除缓存，增加了**缓存的状态周期**，监听函数等。
 
 后续版本会完善其他功能。
+
 
 
 ### demo

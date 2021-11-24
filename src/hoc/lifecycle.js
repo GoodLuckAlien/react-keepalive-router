@@ -14,12 +14,13 @@ import {
 function keepaliveLifeCycle(Component) {
   const isClassComponent = Component.prototype.setState && Component.prototype.isReactComponent
   if (!isClassComponent) return Component
+
   let callback = null
   const SelfComponent = ExtendsSelfHoc(Component,funCur(() => callback))
 
   class WrapComponent extends React.Component {
-    constructor() {
-      super()
+    constructor(props) {
+      super(props)
       this.cur = null
       callback = (cur) => (this.cur=cur)
     }

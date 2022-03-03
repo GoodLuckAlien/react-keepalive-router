@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-indent-props */
+/* eslint-disable react/no-multi-comp */
 import React, {useRef, useEffect, useMemo, memo, useContext} from 'react'
 
 import CacheContext from '../core/cacheContext'
@@ -7,7 +9,7 @@ import {isFuntion} from '../utils/index'
 
 
 export const beforeSwitchDestory = {}
-const keepChange = (pre, next) => pre.state === next.state 
+const keepChange = (pre, next) => pre.state === next.state
 let cacheDispatchCurrent = null
 
 export const handerReactComponent = (children, prop) =>
@@ -74,7 +76,7 @@ function Cache({children, ...prop}) {
              key={cacheId}
              {...cacheState[cacheId]}
               dispatch={cacheDispatch}
-        />
+                />
       })
     }
     {!cacheDispatchCurrent && <GetCacheContext cacheDispatch={c => (cacheDispatchCurrent = c)} />}

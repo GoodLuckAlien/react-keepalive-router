@@ -20,7 +20,7 @@ export const handerReactComponent = (children, prop) =>
       : null
 const UpdateComponent = memo(({children}) => children, () => true)
 
-const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState,load = () => {}, router = {}}) => {
+const CacheKeepItem = memo(({cacheId, children, state, dispatch, className='', lastState,load = () => {}, router = {}}) => {
   const parentCurDom = useRef(null)
   const curDom = useRef(null)
   const curComponent = useRef(null)
@@ -61,19 +61,23 @@ const CacheKeepItem = memo(({cacheId, children, state, dispatch, lastState,load 
     }
   }, [state])
   return <div ref={curDom}
-      style={{display: state === ACTION_UNACTIVED ? 'none' : 'block' }}
+      style={{
+        display: state === ACTION_UNACTIVED ? 'none' : 'block'
+      }}
+      className={className}
          >
     {(state === ACTION_ACTIVE || state === ACTION_ACTIVED || state === ACITON_UNACTIVE || state === ACTION_UNACTIVED) ? <UpdateComponent>{children()}</UpdateComponent> : null}
   </div>
 }, keepChange)
 
-function Cache({children, ...prop}) {
+function Cache({children, className, ...prop}) {
   const [cacheState, cacheDispatch] = useKeeper()
   return <CacheContext.Provider value={{cacheState, cacheDispatch}} >
     {
       Object.keys(cacheState).map(cacheId =>{
         return  <CacheKeepItem cacheId={cacheId}
              key={cacheId}
+             className={className}
              {...cacheState[cacheId]}
               dispatch={cacheDispatch}
                 />

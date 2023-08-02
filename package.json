@@ -1,6 +1,6 @@
 {
   "name": "@didi/react-keepalive-router",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "基于`react 16.8+` ,`react-router 4+` 开发的`react`缓存组件，可以用于缓存页面组件，类似`vue`的`keepalive`包裹`vue-router`的效果功能。",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
     "invariant": ">=2"
   },
   "author": "rachelxuxin",
+  "maintainers": ["rachelxuxin"],
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.12.3",
